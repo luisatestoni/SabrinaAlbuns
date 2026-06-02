@@ -9,13 +9,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SabrinaDAO {
-    ArrayList<SabrinaDTO> listaAlbuns = new ArrayList<>();
+
     public ArrayList<SabrinaDTO> selecionarAlbuns(){
 
+        ArrayList<SabrinaDTO> listaAlbuns = new ArrayList<>();
         String sql = "SELECT * FROM albuns_sabrina_carpenter";
-
-
-        // try-with-resources: fecha automaticamente Connection, PreparedStatement e ResultSet
 
         try (
                 Connection c = new Conexao().conectaBD();
@@ -23,9 +21,7 @@ public class SabrinaDAO {
                 ResultSet rs = ps.executeQuery()
         ) {
 
-            // Executa a consulta e percorre os resultados
             while (rs.next()) {
-
                 SabrinaDTO album = new SabrinaDTO();
 
                 album.setId(rs.getInt("id"));
@@ -38,7 +34,6 @@ public class SabrinaDAO {
                 listaAlbuns.add(album);
             }
 
-
         } catch (SQLException ex) {
             Logger.getLogger(SabrinaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -46,19 +41,15 @@ public class SabrinaDAO {
     }
 
     public void cadastrarAlbum(SabrinaDTO album) {
-
-        // SQL com parâmetros (evita SQL Injection)
         String sql = "INSERT INTO albuns_sabrina_carpenter " +
                 "(nome_album, ano_lancamento, gravadora, genero, numero_faixas) " +
                 "VALUES (?, ?, ?, ?, ?)";
 
-        // try-with-resources: fecha automaticamente Connection e PreparedStatement
         try (
                 Connection c = new Conexao().conectaBD();
                 PreparedStatement ps = c.prepareStatement(sql)
         ) {
 
-            // Preenchendo os parâmetros do SQL
             ps.setString(1, album.getNomeAlbum());
             ps.setInt(2, album.getAnoLancamento());
             ps.setString(3, album.getGravadora());
@@ -67,26 +58,21 @@ public class SabrinaDAO {
 
             ps.executeUpdate();
 
-
-
-        } catch (SQLException e) {
+        } catch (SQLException ex) {
             Logger.getLogger(SabrinaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public void atualizarAlbum(SabrinaDTO album) {
-
         String sql = "UPDATE albuns_sabrina_carpenter SET " +
                 "nome_album = ?, ano_lancamento = ?, gravadora = ?, genero = ?, numero_faixas = ? " +
                 "WHERE id = ?";
 
-        // try-with-resources: fecha automaticamente Connection e PreparedStatement
         try (
                 Connection c = new Conexao().conectaBD();
                 PreparedStatement ps = c.prepareStatement(sql)
         ) {
 
-            // Preenchendo parâmetros do UPDATE
             ps.setString(1, album.getNomeAlbum());
             ps.setInt(2, album.getAnoLancamento());
             ps.setString(3, album.getGravadora());
@@ -96,33 +82,24 @@ public class SabrinaDAO {
 
             ps.executeUpdate();
 
-
-
-        } catch (SQLException e) {
+        } catch (SQLException ex) { // Corrigido de 'e' para 'ex'
             Logger.getLogger(SabrinaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public void excluirAlbum(int id) {
-
         String sql = "DELETE FROM albuns_sabrina_carpenter WHERE id = ?";
 
-        // try-with-resources: fecha automaticamente Connection e PreparedStatement
         try (
                 Connection c = new Conexao().conectaBD();
                 PreparedStatement ps = c.prepareStatement(sql)
         ) {
 
-            // Definindo o ID para exclusão
             ps.setInt(1, id);
-
             ps.executeUpdate();
 
-
-
-        } catch (SQLException e) {
+        } catch (SQLException ex) {
             Logger.getLogger(SabrinaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
 }

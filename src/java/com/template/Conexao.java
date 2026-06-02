@@ -9,10 +9,6 @@ public class Conexao {
     static String usuario = "postgres";
     static String senha = "postgres";
 
-    /**
-     * Abre e retorna uma conexão com o banco de dados.
-     * Em caso de falha, lança RuntimeException com mensagem padronizada.
-     */
 
     public Connection conectaBD() {
         try {
