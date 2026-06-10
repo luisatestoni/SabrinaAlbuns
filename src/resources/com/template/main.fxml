@@ -5,31 +5,33 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane onMouseClicked="#carregarCampos" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: FFF4F2;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.template.MainController">
+<AnchorPane onMouseClicked="#carregarCampos" prefHeight="402.0" prefWidth="917.0" style="-fx-background-color: FFF4F2;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.template.MainController">
     <children>
-        <TextField fx:id="txtNomeAlbum" layoutX="131.0" layoutY="27.0" style="-fx-background-radius: 30;" />
-        <TextField fx:id="txtNumeroFaixas" layoutX="140.0" layoutY="70.0" prefHeight="25.0" prefWidth="140.0" style="-fx-background-radius: 30;" />
-        <TextField fx:id="txtGravadora" layoutX="92.0" layoutY="110.0" prefHeight="25.0" prefWidth="177.0" style="-fx-background-radius: 30;" />
-        <TextField fx:id="txtAnoLancamento" layoutX="444.0" layoutY="27.0" prefHeight="25.0" prefWidth="117.0" style="-fx-background-radius: 30;" />
-        <TextField fx:id="txtGenero" layoutX="369.0" layoutY="70.0" prefHeight="25.0" prefWidth="192.0" style="-fx-background-radius: 30;" />
-        <TextField fx:id="txtId" editable="false" layoutX="338.0" layoutY="110.0" prefHeight="25.0" prefWidth="224.0" style="-fx-background-radius: 30;" />
+        <TextField fx:id="txtNomeAlbum" layoutX="131.0" layoutY="27.0" prefHeight="25.0" prefWidth="137.0" style="-fx-background-radius: 0; -fx-border-color: #FFCAC2;" />
+        <TextField fx:id="txtNumeroFaixas" layoutX="140.0" layoutY="70.0" prefHeight="25.0" prefWidth="128.0" style="-fx-background-radius: 0; -fx-border-color: #FFCAC2;" />
+        <TextField fx:id="txtGravadora" layoutX="92.0" layoutY="110.0" prefHeight="25.0" prefWidth="177.0" style="-fx-background-radius: 0; -fx-border-color: #FFCAC2;" />
+        <TextField fx:id="txtAnoLancamento" layoutX="444.0" layoutY="27.0" prefHeight="25.0" prefWidth="117.0" style="-fx-background-radius: 0; -fx-border-color: #FFCAC2;" />
+        <TextField fx:id="txtGenero" layoutX="369.0" layoutY="70.0" prefHeight="25.0" prefWidth="192.0" style="-fx-background-radius: 0; -fx-border-color: #FFCAC2;" />
+        <TextField fx:id="txtId" editable="false" layoutX="338.0" layoutY="110.0" prefHeight="25.0" prefWidth="224.0" style="-fx-background-radius: 0; -fx-border-color: #FFCAC2;" />
 
         <Label layoutX="14.0" layoutY="29.0" text="Nome do álbum" textFill="#ffcac2">
             <font>
                 <Font name="System Bold" size="14.0" />
             </font></Label>
 
-        <TableView fx:id="tblAlbuns" layoutX="111.0" layoutY="175.0" onMouseClicked="#carregarCampos" prefHeight="200.0" prefWidth="476.0" style="-fx-background-color: #FFE2DB;">
+        <TableView fx:id="tblAlbuns" layoutX="111.0" layoutY="175.0" onMouseClicked="#carregarCampos" prefHeight="200.0" prefWidth="580.0" style="-fx-background-color: #FFE2DB;">
             <columns>
                 <TableColumn fx:id="colId" prefWidth="26.0" style="-fx-background-color: #FFCAC2;" text="ID" />
-                <TableColumn fx:id="colNomeAlbum" prefWidth="67.0" style="-fx-background-color: #FFCAC2;" text="Nome do Álbum" />
-                <TableColumn fx:id="colNumeroFaixas" prefWidth="108.0" style="-fx-background-color: #FFCAC2;" text="Número de faixas" />
-                <TableColumn fx:id="colGravadora" prefWidth="67.0" style="-fx-background-color: #FFCAC2;" text="Gravadora" />
-                <TableColumn fx:id="colAnoLancamento" prefWidth="124.0" style="-fx-background-color: #FFCAC2;" text="Ano de lançamento" />
-                <TableColumn fx:id="colGenero" prefWidth="83.0" style="-fx-background-color: #FFCAC2;" text="Gênero" />
+                <TableColumn fx:id="colNomeAlbum" prefWidth="129.0" style="-fx-background-color: #FFCAC2;" text="Nome do Álbum" />
+                <TableColumn fx:id="colNumeroFaixas" prefWidth="127.0" style="-fx-background-color: #FFCAC2;" text="Número de faixas" />
+                <TableColumn fx:id="colGravadora" prefWidth="90.0" style="-fx-background-color: #FFCAC2;" text="Gravadora" />
+                <TableColumn fx:id="colAnoLancamento" prefWidth="132.0" style="-fx-background-color: #FFCAC2;" text="Ano de lançamento" />
+                <TableColumn fx:id="colGenero" prefWidth="75.0" style="-fx-background-color: #FFCAC2;" text="Gênero" />
             </columns>
         </TableView>
 
@@ -75,5 +77,16 @@
                 <Font name="System Bold" size="14.0" />
             </font>
         </Label>
+        <ImageView fitHeight="600.0" fitWidth="200.0" layoutX="703.0" layoutY="176.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@/imagens/sabrina-imagem.jpg" />
+            </image>
+        </ImageView>
+
+        <ImageView fitHeight="113.0" fitWidth="107.0" layoutX="757.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@/imagens/image-removebg-preview.png" />
+            </image>
+        </ImageView>
     </children>
 </AnchorPane>

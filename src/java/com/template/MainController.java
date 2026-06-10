@@ -2,6 +2,8 @@ package com.template;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -67,6 +69,7 @@ public class MainController {
         txtGenero.clear();
         txtNumeroFaixas.clear();
         tblAlbuns.getSelectionModel().clearSelection();
+        txtNomeAlbum.requestFocus();
     }
 
 
@@ -86,7 +89,6 @@ public class MainController {
 
     @FXML
     private void initialize() {
-
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colNomeAlbum.setCellValueFactory(new PropertyValueFactory<>("nomeAlbum"));
         colAnoLancamento.setCellValueFactory(new PropertyValueFactory<>("anoLancamento"));
@@ -94,12 +96,53 @@ public class MainController {
         colGenero.setCellValueFactory(new PropertyValueFactory<>("genero"));
         colNumeroFaixas.setCellValueFactory(new PropertyValueFactory<>("numeroFaixas"));
 
+        configurarCampoNumerico(txtAnoLancamento);
+        configurarCampoNumerico(txtNumeroFaixas);
+
+        tblAlbuns.getSelectionModel().selectedItemProperty().addListener((obs, antigo, novo) -> {
+            if (novo != null) {
+                carregarCampos();
+            }
+        });
 
         carregarAlbuns();
     }
 
+    private void configurarCampoNumerico(TextField textField) {
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                textField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+    }
+
+    // NOVA MELHORIA: Método auxiliar para validar se todos os campos estão preenchidos
+    private boolean validarCampos() {
+        if (txtNomeAlbum.getText().trim().isEmpty() ||
+                txtAnoLancamento.getText().trim().isEmpty() ||
+                txtGravadora.getText().trim().isEmpty() ||
+                txtGenero.getText().trim().isEmpty() ||
+                txtNumeroFaixas.getText().trim().isEmpty()) {
+
+            // Cria uma caixinha de alerta amigável na tela (Padrão do JavaFX)
+            Alert alerta = new Alert(AlertType.WARNING);
+            alerta.setTitle("Campos Obrigatórios");
+            alerta.setHeaderText("Aviso de Validação");
+            alerta.setContentText("Por favor, preencha todos os campos antes de salvar ou editar!");
+            alerta.showAndWait();
+
+            return false; // Retorna falso porque faltam dados
+        }
+        return true; // Todos os campos estão preenchidos corretamente
+    }
+
     @FXML
     private void btnSalvarAction(ActionEvent event) {
+        // Verifica se passou na validação. Se não passou, para a execução aqui!
+        if (!validarCampos()) {
+            return;
+        }
+
         SabrinaDTO albumDto = new SabrinaDTO();
         albumDto.setNomeAlbum(txtNomeAlbum.getText());
         albumDto.setAnoLancamento(Integer.parseInt(txtAnoLancamento.getText()));
@@ -119,8 +162,12 @@ public class MainController {
         SabrinaDTO albumSelecionado = tblAlbuns.getSelectionModel().getSelectedItem();
 
         if (albumSelecionado != null) {
-            SabrinaDTO albumDto = new SabrinaDTO();
+            // Verifica se passou na validação antes de editar
+            if (!validarCampos()) {
+                return;
+            }
 
+            SabrinaDTO albumDto = new SabrinaDTO();
             albumDto.setId(albumSelecionado.getId());
             albumDto.setNomeAlbum(txtNomeAlbum.getText());
             albumDto.setAnoLancamento(Integer.parseInt(txtAnoLancamento.getText()));
