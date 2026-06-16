@@ -2,11 +2,8 @@ package com.template;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.collections.FXCollections;
 import java.util.ArrayList;
@@ -52,6 +49,12 @@ public class MainController {
     @FXML
     private TableColumn<SabrinaDTO, Integer> colNumeroFaixas;
 
+    @FXML
+    private Button btnEditar;
+
+    @FXML
+    private Button btnDeletar;
+
 
     private void carregarAlbuns() {
         SabrinaDAO objDAO = new SabrinaDAO();
@@ -87,8 +90,10 @@ public class MainController {
         }
     }
 
+
     @FXML
     private void initialize() {
+        // Vincula as colunas da tabela com o DTO
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colNomeAlbum.setCellValueFactory(new PropertyValueFactory<>("nomeAlbum"));
         colAnoLancamento.setCellValueFactory(new PropertyValueFactory<>("anoLancamento"));
@@ -96,16 +101,48 @@ public class MainController {
         colGenero.setCellValueFactory(new PropertyValueFactory<>("genero"));
         colNumeroFaixas.setCellValueFactory(new PropertyValueFactory<>("numeroFaixas"));
 
-        configurarCampoNumerico(txtAnoLancamento);
-        configurarCampoNumerico(txtNumeroFaixas);
-
+        // Adiciona o ouvinte para carregar os campos ao clicar em uma linha
         tblAlbuns.getSelectionModel().selectedItemProperty().addListener((obs, antigo, novo) -> {
             if (novo != null) {
                 carregarCampos();
             }
         });
 
+
+        configurarCampoNumerico(txtAnoLancamento);
+        configurarCampoNumerico(txtNumeroFaixas);
+
+        // O botão Editar fica desabilitado SE a propriedade "selectedItem" da tabela estiver vazia
+        btnEditar.disableProperty().bind(tblAlbuns.getSelectionModel().selectedItemProperty().isNull());
+        btnDeletar.disableProperty().bind(tblAlbuns.getSelectionModel().selectedItemProperty().isNull());
+
         carregarAlbuns();
+    }
+
+    // MELHORIA: Valida campos vazios E se os campos numéricos possuem apenas números
+    private boolean validarCampos() {
+        // 1. Verifica se tem algum campo em branco
+        if (txtNomeAlbum.getText().trim().isEmpty() ||
+                txtAnoLancamento.getText().trim().isEmpty() ||
+                txtGravadora.getText().trim().isEmpty() ||
+                txtGenero.getText().trim().isEmpty() ||
+                txtNumeroFaixas.getText().trim().isEmpty()) {
+
+            exibirAlerta("Campos Obrigatórios", "Aviso de Validação", "Por favor, preencha todos os campos antes de continuar!");
+            return false;
+        }
+
+
+        return true;
+    }
+
+
+    private void exibirAlerta(String titulo, String cabecalho, String conteudo) {
+        Alert alerta = new Alert(AlertType.WARNING);
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(cabecalho);
+        alerta.setContentText(conteudo);
+        alerta.showAndWait();
     }
 
     private void configurarCampoNumerico(TextField textField) {
@@ -116,29 +153,8 @@ public class MainController {
         });
     }
 
-    // NOVA MELHORIA: Método auxiliar para validar se todos os campos estão preenchidos
-    private boolean validarCampos() {
-        if (txtNomeAlbum.getText().trim().isEmpty() ||
-                txtAnoLancamento.getText().trim().isEmpty() ||
-                txtGravadora.getText().trim().isEmpty() ||
-                txtGenero.getText().trim().isEmpty() ||
-                txtNumeroFaixas.getText().trim().isEmpty()) {
-
-            // Cria uma caixinha de alerta amigável na tela (Padrão do JavaFX)
-            Alert alerta = new Alert(AlertType.WARNING);
-            alerta.setTitle("Campos Obrigatórios");
-            alerta.setHeaderText("Aviso de Validação");
-            alerta.setContentText("Por favor, preencha todos os campos antes de salvar ou editar!");
-            alerta.showAndWait();
-
-            return false; // Retorna falso porque faltam dados
-        }
-        return true; // Todos os campos estão preenchidos corretamente
-    }
-
     @FXML
     private void btnSalvarAction(ActionEvent event) {
-        // Verifica se passou na validação. Se não passou, para a execução aqui!
         if (!validarCampos()) {
             return;
         }
