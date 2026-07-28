@@ -1,5 +1,7 @@
-package com.template;
+package com.template.controller;
 
+import com.template.model.dao.SabrinaDAO;
+import com.template.model.dto.SabrinaDTO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -7,6 +9,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.collections.FXCollections;
 import java.util.ArrayList;
+import static com.template.util.DialogUtil.exibirAlerta;
+
 
 public class MainController {
 
@@ -128,7 +132,12 @@ public class MainController {
                 txtGenero.getText().trim().isEmpty() ||
                 txtNumeroFaixas.getText().trim().isEmpty()) {
 
-            exibirAlerta("Campos Obrigatórios", "Aviso de Validação", "Por favor, preencha todos os campos antes de continuar!");
+            exibirAlerta(
+                    "Campos Obrigatórios",
+                    "Aviso de Validação",
+                    "Por favor, preencha todos os campos antes de continuar!"
+            );
+
             return false;
         }
 
@@ -136,14 +145,6 @@ public class MainController {
         return true;
     }
 
-
-    private void exibirAlerta(String titulo, String cabecalho, String conteudo) {
-        Alert alerta = new Alert(AlertType.WARNING);
-        alerta.setTitle(titulo);
-        alerta.setHeaderText(cabecalho);
-        alerta.setContentText(conteudo);
-        alerta.showAndWait();
-    }
 
     private void configurarCampoNumerico(TextField textField) {
         textField.textProperty().addListener((observable, oldValue, newValue) -> {

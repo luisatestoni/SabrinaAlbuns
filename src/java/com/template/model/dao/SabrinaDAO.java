@@ -1,4 +1,7 @@
-package com.template;
+package com.template.model.dao;
+
+import com.template.model.Conexao;
+import com.template.model.dto.SabrinaDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,6 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static com.template.util.DialogUtil.mostrarErro;
 
 public class SabrinaDAO {
 
@@ -36,6 +40,8 @@ public class SabrinaDAO {
 
         } catch (SQLException ex) {
             Logger.getLogger(SabrinaDAO.class.getName()).log(Level.SEVERE, null, ex);
+            mostrarErro("Por favor, preencha todos os campos.");
+
         }
         return listaAlbuns;
     }
@@ -60,6 +66,7 @@ public class SabrinaDAO {
 
         } catch (SQLException ex) {
             Logger.getLogger(SabrinaDAO.class.getName()).log(Level.SEVERE, null, ex);
+            mostrarErro("Por favor, preencha todos os campos.");
         }
     }
 
@@ -84,6 +91,7 @@ public class SabrinaDAO {
 
         } catch (SQLException ex) { // Corrigido de 'e' para 'ex'
             Logger.getLogger(SabrinaDAO.class.getName()).log(Level.SEVERE, null, ex);
+            mostrarErro("Por favor, preencha todos os campos.");
         }
     }
 
@@ -100,6 +108,7 @@ public class SabrinaDAO {
 
         } catch (SQLException ex) {
             Logger.getLogger(SabrinaDAO.class.getName()).log(Level.SEVERE, null, ex);
+            mostrarErro("Por favor, preencha todos os campos.");
         }
     }
 }
