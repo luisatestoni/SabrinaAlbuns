@@ -2,6 +2,7 @@ package com.template.controller;
 
 import com.template.model.dao.SabrinaDAO;
 import com.template.model.dto.SabrinaDTO;
+import com.template.validator.AlbumValidator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -124,26 +125,7 @@ public class MainController {
     }
 
     // MELHORIA: Valida campos vazios E se os campos numéricos possuem apenas números
-    private boolean validarCampos() {
-        // 1. Verifica se tem algum campo em branco
-        if (txtNomeAlbum.getText().trim().isEmpty() ||
-                txtAnoLancamento.getText().trim().isEmpty() ||
-                txtGravadora.getText().trim().isEmpty() ||
-                txtGenero.getText().trim().isEmpty() ||
-                txtNumeroFaixas.getText().trim().isEmpty()) {
 
-            exibirAlerta(
-                    "Campos Obrigatórios",
-                    "Aviso de Validação",
-                    "Por favor, preencha todos os campos antes de continuar!"
-            );
-
-            return false;
-        }
-
-
-        return true;
-    }
 
 
     private void configurarCampoNumerico(TextField textField) {
@@ -156,9 +138,7 @@ public class MainController {
 
     @FXML
     private void btnSalvarAction(ActionEvent event) {
-        if (!validarCampos()) {
-            return;
-        }
+        if (!AlbumValidator.validarCampos( txtNomeAlbum, txtAnoLancamento, txtGravadora, txtGenero, txtNumeroFaixas)) { return; }
 
         SabrinaDTO albumDto = new SabrinaDTO();
         albumDto.setNomeAlbum(txtNomeAlbum.getText());
@@ -180,9 +160,7 @@ public class MainController {
 
         if (albumSelecionado != null) {
             // Verifica se passou na validação antes de editar
-            if (!validarCampos()) {
-                return;
-            }
+            if (!AlbumValidator.validarCampos( txtNomeAlbum, txtAnoLancamento, txtGravadora, txtGenero, txtNumeroFaixas)) { return; }
 
             SabrinaDTO albumDto = new SabrinaDTO();
             albumDto.setId(albumSelecionado.getId());
