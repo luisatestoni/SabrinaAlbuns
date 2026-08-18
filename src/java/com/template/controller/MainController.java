@@ -1,72 +1,43 @@
 package com.template.controller;
 
-import com.template.model.dao.SabrinaDAO;
 import com.template.model.dto.SabrinaDTO;
+import com.template.services.AlbumService;
+import com.template.services.IUServices;
 import com.template.validator.AlbumValidator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.collections.FXCollections;
 import java.util.ArrayList;
-import static com.template.util.DialogUtil.exibirAlerta;
-
 
 public class MainController {
 
-    @FXML
-    private TextField txtId;
+    @FXML private TextField txtId;
+    @FXML private TextField txtNomeAlbum;
+    @FXML private TextField txtAnoLancamento;
+    @FXML private TextField txtGravadora;
+    @FXML private TextField txtGenero;
+    @FXML private TextField txtNumeroFaixas;
 
-    @FXML
-    private TextField txtNomeAlbum;
+    @FXML private TableView<SabrinaDTO> tblAlbuns;
+    @FXML private TableColumn<SabrinaDTO, Integer> colId;
+    @FXML private TableColumn<SabrinaDTO, String> colNomeAlbum;
+    @FXML private TableColumn<SabrinaDTO, Integer> colAnoLancamento;
+    @FXML private TableColumn<SabrinaDTO, String> colGravadora;
+    @FXML private TableColumn<SabrinaDTO, String> colGenero;
+    @FXML private TableColumn<SabrinaDTO, Integer> colNumeroFaixas;
 
-    @FXML
-    private TextField txtAnoLancamento;
+    @FXML private Button btnEditar;
+    @FXML private Button btnDeletar;
 
-    @FXML
-    private TextField txtGravadora;
-
-    @FXML
-    private TextField txtGenero;
-
-    @FXML
-    private TextField txtNumeroFaixas;
-
-    @FXML
-    private TableView<SabrinaDTO> tblAlbuns;
-
-    @FXML
-    private TableColumn<SabrinaDTO, Integer> colId;
-
-    @FXML
-    private TableColumn<SabrinaDTO, String> colNomeAlbum;
-
-    @FXML
-    private TableColumn<SabrinaDTO, Integer> colAnoLancamento;
-
-    @FXML
-    private TableColumn<SabrinaDTO, String> colGravadora;
-
-    @FXML
-    private TableColumn<SabrinaDTO, String> colGenero;
-
-    @FXML
-    private TableColumn<SabrinaDTO, Integer> colNumeroFaixas;
-
-    @FXML
-    private Button btnEditar;
-
-    @FXML
-    private Button btnDeletar;
-
+    // Instância do AlbumService
+    private final AlbumService albumService = new AlbumService();
 
     private void carregarAlbuns() {
-        SabrinaDAO objDAO = new SabrinaDAO();
-        ArrayList<SabrinaDTO> lista = objDAO.selecionarAlbuns();
+        ArrayList<SabrinaDTO> lista = albumService.selecionarAlbuns();
         tblAlbuns.setItems(FXCollections.observableArrayList(lista));
     }
-
 
     @FXML
     private void limparCampos() {
@@ -79,7 +50,6 @@ public class MainController {
         tblAlbuns.getSelectionModel().clearSelection();
         txtNomeAlbum.requestFocus();
     }
-
 
     @FXML
     private void carregarCampos() {
@@ -94,7 +64,6 @@ public class MainController {
             txtNumeroFaixas.setText(String.valueOf(albumDto.getNumeroFaixas()));
         }
     }
-
 
     @FXML
     private void initialize() {
@@ -113,42 +82,27 @@ public class MainController {
             }
         });
 
+        // Aplica o utilitário nos campos numéricos
+        IUServices.configurarCampoNumerico(txtAnoLancamento);
+        IUServices.configurarCampoNumerico(txtNumeroFaixas);
 
-        configurarCampoNumerico(txtAnoLancamento);
-        configurarCampoNumerico(txtNumeroFaixas);
-
-        // O botão Editar fica desabilitado SE a propriedade "selectedItem" da tabela estiver vazia
         btnEditar.disableProperty().bind(tblAlbuns.getSelectionModel().selectedItemProperty().isNull());
         btnDeletar.disableProperty().bind(tblAlbuns.getSelectionModel().selectedItemProperty().isNull());
 
         carregarAlbuns();
     }
 
-    // MELHORIA: Valida campos vazios E se os campos numéricos possuem apenas números
-
-
-
-    private void configurarCampoNumerico(TextField textField) {
-        textField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) {
-                textField.setText(newValue.replaceAll("[^\\d]", ""));
-            }
-        });
-    }
-
     @FXML
     private void btnSalvarAction(ActionEvent event) {
-        if (!AlbumValidator.validarCampos( txtNomeAlbum, txtAnoLancamento, txtGravadora, txtGenero, txtNumeroFaixas)) { return; }
+        if (!AlbumValidator.validarCampos(txtNomeAlbum, txtAnoLancamento, txtGravadora, txtGenero, txtNumeroFaixas)) { return; }
 
-        SabrinaDTO albumDto = new SabrinaDTO();
-        albumDto.setNomeAlbum(txtNomeAlbum.getText());
-        albumDto.setAnoLancamento(Integer.parseInt(txtAnoLancamento.getText()));
-        albumDto.setGravadora(txtGravadora.getText());
-        albumDto.setGenero(txtGenero.getText());
-        albumDto.setNumeroFaixas(Integer.parseInt(txtNumeroFaixas.getText()));
-
-        SabrinaDAO dao = new SabrinaDAO();
-        dao.cadastrarAlbum(albumDto);
+        albumService.cadastrarAlbum(
+                txtNomeAlbum.getText(),
+                txtAnoLancamento.getText(),
+                txtGravadora.getText(),
+                txtGenero.getText(),
+                txtNumeroFaixas.getText()
+        );
 
         carregarAlbuns();
         limparCampos();
@@ -159,19 +113,16 @@ public class MainController {
         SabrinaDTO albumSelecionado = tblAlbuns.getSelectionModel().getSelectedItem();
 
         if (albumSelecionado != null) {
-            // Verifica se passou na validação antes de editar
-            if (!AlbumValidator.validarCampos( txtNomeAlbum, txtAnoLancamento, txtGravadora, txtGenero, txtNumeroFaixas)) { return; }
+            if (!AlbumValidator.validarCampos(txtNomeAlbum, txtAnoLancamento, txtGravadora, txtGenero, txtNumeroFaixas)) { return; }
 
-            SabrinaDTO albumDto = new SabrinaDTO();
-            albumDto.setId(albumSelecionado.getId());
-            albumDto.setNomeAlbum(txtNomeAlbum.getText());
-            albumDto.setAnoLancamento(Integer.parseInt(txtAnoLancamento.getText()));
-            albumDto.setGravadora(txtGravadora.getText());
-            albumDto.setGenero(txtGenero.getText());
-            albumDto.setNumeroFaixas(Integer.parseInt(txtNumeroFaixas.getText()));
-
-            SabrinaDAO dao = new SabrinaDAO();
-            dao.atualizarAlbum(albumDto);
+            albumService.atualizarAlbum(
+                    albumSelecionado.getId(),
+                    txtNomeAlbum.getText(),
+                    txtAnoLancamento.getText(),
+                    txtGravadora.getText(),
+                    txtGenero.getText(),
+                    txtNumeroFaixas.getText()
+            );
 
             carregarAlbuns();
             limparCampos();
@@ -188,8 +139,7 @@ public class MainController {
         SabrinaDTO albumSelecionado = tblAlbuns.getSelectionModel().getSelectedItem();
 
         if (albumSelecionado != null) {
-            SabrinaDAO dao = new SabrinaDAO();
-            dao.excluirAlbum(albumSelecionado.getId());
+            albumService.excluirAlbum(albumSelecionado.getId());
 
             carregarAlbuns();
             limparCampos();
