@@ -31,8 +31,9 @@ public class MainController {
     @FXML private Button btnEditar;
     @FXML private Button btnDeletar;
 
-    // Instância do AlbumService
+    // Instâncias das classes de serviço e validação (Declaradas dentro da classe)
     private final AlbumService albumService = new AlbumService();
+    private final AlbumValidator albumValidator = new AlbumValidator();
 
     private void carregarAlbuns() {
         ArrayList<SabrinaDTO> lista = albumService.selecionarAlbuns();
@@ -67,7 +68,6 @@ public class MainController {
 
     @FXML
     private void initialize() {
-        // Vincula as colunas da tabela com o DTO
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colNomeAlbum.setCellValueFactory(new PropertyValueFactory<>("nomeAlbum"));
         colAnoLancamento.setCellValueFactory(new PropertyValueFactory<>("anoLancamento"));
@@ -75,14 +75,12 @@ public class MainController {
         colGenero.setCellValueFactory(new PropertyValueFactory<>("genero"));
         colNumeroFaixas.setCellValueFactory(new PropertyValueFactory<>("numeroFaixas"));
 
-        // Adiciona o ouvinte para carregar os campos ao clicar em uma linha
         tblAlbuns.getSelectionModel().selectedItemProperty().addListener((obs, antigo, novo) -> {
             if (novo != null) {
                 carregarCampos();
             }
         });
 
-        // Aplica o utilitário nos campos numéricos
         IUServices.configurarCampoNumerico(txtAnoLancamento);
         IUServices.configurarCampoNumerico(txtNumeroFaixas);
 
@@ -94,7 +92,17 @@ public class MainController {
 
     @FXML
     private void btnSalvarAction(ActionEvent event) {
-        if (!AlbumValidator.validarCampos(txtNomeAlbum, txtAnoLancamento, txtGravadora, txtGenero, txtNumeroFaixas)) { return; }
+        boolean valido = albumValidator.validarAlbum(
+                txtNomeAlbum.getText(),
+                txtAnoLancamento.getText(),
+                txtGravadora.getText(),
+                txtGenero.getText(),
+                txtNumeroFaixas.getText()
+        );
+
+        if (!valido) {
+            return;
+        }
 
         albumService.cadastrarAlbum(
                 txtNomeAlbum.getText(),
@@ -113,7 +121,17 @@ public class MainController {
         SabrinaDTO albumSelecionado = tblAlbuns.getSelectionModel().getSelectedItem();
 
         if (albumSelecionado != null) {
-            if (!AlbumValidator.validarCampos(txtNomeAlbum, txtAnoLancamento, txtGravadora, txtGenero, txtNumeroFaixas)) { return; }
+            boolean valido = albumValidator.validarAlbum(
+                    txtNomeAlbum.getText(),
+                    txtAnoLancamento.getText(),
+                    txtGravadora.getText(),
+                    txtGenero.getText(),
+                    txtNumeroFaixas.getText()
+            );
+
+            if (!valido) {
+                return;
+            }
 
             albumService.atualizarAlbum(
                     albumSelecionado.getId(),

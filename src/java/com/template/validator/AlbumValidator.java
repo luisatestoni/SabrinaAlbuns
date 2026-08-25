@@ -1,51 +1,33 @@
 package com.template.validator;
 
+import java.util.ArrayList;
+import java.util.List;
 import static com.template.util.DialogUtil.exibirAlerta;
-
-import javafx.scene.control.TextField;
-
-import java.time.Year;
 
 public class AlbumValidator {
 
-    public static boolean validarCampos(
-            TextField txtNomeAlbum,
-            TextField txtAnoLancamento,
-            TextField txtGravadora,
-            TextField txtGenero,
-            TextField txtNumeroFaixas) {
+    public boolean validarAlbum(String nomeAlbum, String anoLancamento, String gravadora, String genero, String numeroFaixas) {
+        // Lista de validadores que serão aplicados sequencialmente
+        List<Validador<String>> validadores = new ArrayList<>();
 
-        // 1. Verifica se algum campo está em branco
-        if (txtNomeAlbum.getText().trim().isEmpty() ||
-                txtAnoLancamento.getText().trim().isEmpty() ||
-                txtGravadora.getText().trim().isEmpty() ||
-                txtGenero.getText().trim().isEmpty() ||
-                txtNumeroFaixas.getText().trim().isEmpty()) {
+        // Adicionando os validadores de campos obrigatórios
+        validadores.add(new CampoObrigatorioValidador("Nome do Álbum", nomeAlbum));
+        validadores.add(new CampoObrigatorioValidador("Ano de Lançamento", anoLancamento));
+        validadores.add(new CampoObrigatorioValidador("Gravadora", gravadora));
+        validadores.add(new CampoObrigatorioValidador("Gênero", genero));
+        validadores.add(new CampoObrigatorioValidador("Número de Faixas", numeroFaixas));
 
-            exibirAlerta(
-                    "Campos Obrigatórios",
-                    "Aviso de Validação",
-                    "Por favor, preencha todos os campos antes de continuar!"
-            );
+        // Adicionando o validador específico (aplicado ao campo numeroFaixas)
+        validadores.add(new NumeroFaixasValidador(numeroFaixas));
 
-            return false;
+        // Itera sobre a lista de validadores
+        for (Validador<String> validador : validadores) {
+            // Cada validador testa seu valor específico
+            if (!validador.validar(validador.getValor())) {
+                exibirAlerta("Aviso de Validação", null, validador.getMensagemErro());
+                return false; // Retorna falso na primeira falha de validação
+            }
         }
-
-        // 2. Verifica se o ano de lançamento é válido
-        int ano = Integer.parseInt(txtAnoLancamento.getText());
-
-        if (ano < 1900 || ano > Year.now().getValue()) {
-
-            exibirAlerta(
-                    "Ano Inválido",
-                    "Aviso de Validação",
-                    "Informe um ano de lançamento válido."
-            );
-
-            return false;
-        }
-
-        return true;
+        return true; // Todos os validadores passaram
     }
 }
-

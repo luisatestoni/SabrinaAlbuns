@@ -1,19 +1,25 @@
 package com.template.validator;
 
-public class NumeroFaixasValidador implements Validador<Integer> {
-
-    private Integer valor;
+public class NumeroFaixasValidador implements Validador<String> {
+    private final String valor;
     private String mensagemErro;
 
-    @Override
-    public boolean validar(Integer valor) {
+    public NumeroFaixasValidador(String valor) {
         this.valor = valor;
+    }
 
-        if (valor == null || valor <= 0) {
-            this.mensagemErro = "O álbum deve conter pelo menos 1 faixa.";
+    @Override
+    public boolean validar(String valor) {
+        try {
+            int faixas = Integer.parseInt(valor.trim());
+            if (faixas <= 0) {
+                this.mensagemErro = "O álbum deve conter pelo menos 1 faixa.";
+                return false;
+            }
+        } catch (Exception e) {
+            this.mensagemErro = "Informe um número válido de faixas.";
             return false;
         }
-
         return true;
     }
 
@@ -23,7 +29,7 @@ public class NumeroFaixasValidador implements Validador<Integer> {
     }
 
     @Override
-    public Integer getValor() {
+    public String getValor() {
         return this.valor;
     }
 }
