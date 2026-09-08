@@ -1,9 +1,9 @@
 package com.template.controller;
 
 import com.template.model.dto.SabrinaDTO;
-import com.template.services.AlbumService;
+import com.template.validator.IAlbumService;
 import com.template.services.IUServices;
-import com.template.validator.AlbumValidator;
+import com.template.validator.IAlbumValidator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -32,8 +32,13 @@ public class MainController {
     @FXML private Button btnDeletar;
 
     // Instâncias das classes de serviço e validação (Declaradas dentro da classe)
-    private final AlbumService albumService = new AlbumService();
-    private final AlbumValidator albumValidator = new AlbumValidator();
+    private final IAlbumService albumService;
+    private final IAlbumValidator albumValidator;
+
+    public MainController(IAlbumService albumService, IAlbumValidator albumValidator) {
+        this.albumService = albumService;
+        this.albumValidator = albumValidator;
+    }
 
     private void carregarAlbuns() {
         ArrayList<SabrinaDTO> lista = albumService.selecionarAlbuns();

@@ -1,10 +1,16 @@
 package com.template.services;
-import com.template.model.dao.SabrinaDAO;
+import com.template.validator.ISabrinaDAO;
 import com.template.model.dto.SabrinaDTO;
+import com.template.validator.IAlbumService;
+
 import java.util.ArrayList;
 
-public class AlbumService {
-    private final SabrinaDAO dao = new SabrinaDAO();
+public class AlbumService implements IAlbumService {
+    private final ISabrinaDAO dao; // era SabrinaDAO concreto — trocar pela interface
+
+    public AlbumService(ISabrinaDAO dao) {
+        this.dao = dao;
+    }
 
     public ArrayList<SabrinaDTO> selecionarAlbuns() {
         return dao.selecionarAlbuns();

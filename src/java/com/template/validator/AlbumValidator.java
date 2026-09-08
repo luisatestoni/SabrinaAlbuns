@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import static com.template.util.DialogUtil.exibirAlerta;
 
-public class AlbumValidator {
+public class AlbumValidator implements IAlbumValidator{
 
     public boolean validarAlbum(String nomeAlbum, String anoLancamento, String gravadora, String genero, String numeroFaixas) {
         // Lista de validadores que serão aplicados sequencialmente

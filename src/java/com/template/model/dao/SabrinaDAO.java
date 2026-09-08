@@ -2,6 +2,7 @@ package com.template.model.dao;
 
 import com.template.model.Conexao;
 import com.template.model.dto.SabrinaDTO;
+import com.template.validator.ISabrinaDAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,8 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import static com.template.util.DialogUtil.mostrarErro;
 
-public class SabrinaDAO {
-
+public class SabrinaDAO implements ISabrinaDAO {
     public ArrayList<SabrinaDTO> selecionarAlbuns(){
 
         ArrayList<SabrinaDTO> listaAlbuns = new ArrayList<>();
